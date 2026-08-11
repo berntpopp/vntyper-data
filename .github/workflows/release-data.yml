@@ -26,8 +26,8 @@ jobs:
   build:
     permissions:
       contents: write
-    uses: hassansaei/VNtyper/.github/workflows/build-reference-bundles.yml@699b81efeaff587696b5a093389fa444d8038038
+    uses: hassansaei/VNtyper/.github/workflows/build-reference-bundles.yml@83059ee687dcfaa53e7186befd04a0938cfd2108
     with:
       release_tag: ${{ inputs.release_tag }}
       release_spec_path: releases/${{ inputs.release_tag }}.json
-      source_commit: 699b81efeaff587696b5a093389fa444d8038038
+      source_commit: 83059ee687dcfaa53e7186befd04a0938cfd2108
