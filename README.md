@@ -70,5 +70,16 @@ artifact set and its remote checksums have been reviewed.
 
 ## Status
 
-`refs-v1` is not yet published. It is blocked on the builder workflow landing in VNtyper —
-see the design and plan in that repository under `docs/superpowers/`.
+`refs-v1` is specified in `releases/refs-v1.json` and built by
+`.github/workflows/release-data.yml`, which dispatches VNtyper's reusable builder pinned at
+`c047cbf` — the merge commit of
+[hassansaei/VNtyper#239](https://github.com/hassansaei/VNtyper/pull/239).
+
+The release is cut as a **draft**. A maintainer reviews `verification-report.json` and checks
+`SHA256SUMS` against the remote assets before publishing. Published releases are immutable:
+a correction is a new tag, never a re-cut of an existing one.
+
+**The trust anchor is VNtyper, not this repository.** Every source URL and digest in a spec
+here must match the values committed in VNtyper's `install_references_config.json`, and the
+build refuses to start if they disagree. To move an upstream, change VNtyper first in a
+reviewed commit, then match the spec to it.

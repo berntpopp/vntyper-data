@@ -1,0 +1,33 @@
+# Builds a VNtyper reference release from a committed spec in this repository.
+#
+# The builder is software and lives with the software, in hassansaei/VNtyper. This file
+# only dispatches it, pinned at a full commit SHA so a bundle is always reproducible from
+# a known builder.
+#
+# The same SHA must appear twice: once in `uses:` and once in `source_commit:`. The
+# reusable workflow asserts they match (against `github.job_workflow_sha`) and refuses to
+# build otherwise, so a bump to one and not the other fails in the first seconds rather
+# than producing a release built by a commit nobody reviewed as the builder.
+name: Build VNtyper reference release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag declared by a committed JSON spec under releases/.
+        required: true
+        type: choice
+        options:
+          - refs-v1
+
+permissions: {}
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    uses: hassansaei/VNtyper/.github/workflows/build-reference-bundles.yml@c047cbf29d46859eaf71ac1c47a4aa80ed4c516d
+    with:
+      release_tag: ${{ inputs.release_tag }}
+      release_spec_path: releases/${{ inputs.release_tag }}.json
+      source_commit: c047cbf29d46859eaf71ac1c47a4aa80ed4c516d

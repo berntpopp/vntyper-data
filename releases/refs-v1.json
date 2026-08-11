@@ -1,0 +1,67 @@
+{
+  "release_tag": "refs-v1",
+  "source_commit": "c047cbf29d46859eaf71ac1c47a4aa80ed4c516d",
+
+  "bwa_version": "0.7.18-r1243-dirty",
+  "samtools_version": "1.20",
+
+  "sources": {
+    "hg19": {
+      "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr1.fa.gz",
+      "source_sha256": "8d99e436ac1b8ee27999917cc4384a0bfec5a75467b59bbbea8ad314adb553d7"
+    },
+    "hg38": {
+      "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr1.fa.gz",
+      "source_sha256": "baf03990d81ed87d66a976779c2eb4d8a0e5243829ca913556d3819fe0fba696"
+    },
+    "GRCh37": {
+      "url": "https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Homo_sapiens/all_assembly_versions/GCF_000001405.25_GRCh37.p13/GCF_000001405.25_GRCh37.p13_assembly_structure/Primary_Assembly/assembled_chromosomes/FASTA/chr1.fna.gz",
+      "source_sha256": "cb58b0a7eb8d478d6f3b803182d6de7654e621a42223ba90c33d02c592dbdfb9"
+    },
+    "GRCh38": {
+      "url": "https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Homo_sapiens/all_assembly_versions/GCF_000001405.40_GRCh38.p14/GCF_000001405.40_GRCh38.p14_assembly_structure/Primary_Assembly/assembled_chromosomes/FASTA/chr1.fna.gz",
+      "source_sha256": "191c0c9f25748e67eb251a5cbeb2289e10dadc98746b4ddf0170c559db219a2e"
+    },
+    "hg19_ensembl": {
+      "url": "https://ftp.ensembl.org/pub/grch37/release-116/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.dna.chromosome.1.fa.gz",
+      "source_sha256": "2f13339ef278b05fd7d80d60052ba12dbd661b6396024b2043a2c5ada07aab96"
+    },
+    "hg38_ensembl": {
+      "url": "https://ftp.ensembl.org/pub/release-116/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.1.fa.gz",
+      "source_sha256": "05d4d42ed292962055afb9774a1a29a691d7b285fd85dbf9069c050a273e0d3c"
+    }
+  },
+
+  "seeds": {
+    "MUC1_motifs_Rev_com.fa": {
+      "sha256": "7e6589f2388f3a08da6fb3bffa1fe22f10a5e03ec618b883fa6f07bcf1cb3e47"
+    },
+    "code-adVNTR_RUs.fa": {
+      "sha256": "c21d631cf894e388c8cb76d7bbd2a51ebf4a27cd1a9158f50971cd831d8aa26e"
+    },
+    "vntr_db_advntr.zip": {
+      "sha256": "90a619f6aa2ee7d038b6d8703a5736d92fd483e8b4bfad4a5ad07480bf8f7ff1"
+    },
+    "filter_config.json": {
+      "sha256": "d2190ed78695efe9b1b8105c97479391b81129cf641410dfb88feb1c1ffea085"
+    }
+  },
+
+  "derivations": [
+    {
+      "output": "muc1_region_hg19.fa",
+      "command": "samtools faidx alignment/chr1.hg19.fa chr1:155158000-155163000",
+      "expected_sha256": "d6007957193f9686e2a8b02becb8a7d02a8aa5dae4f087d233e24e4145b88a1d"
+    },
+    {
+      "output": "muc1_region_hg38.fa",
+      "command": "samtools faidx alignment/chr1.hg38.fa chr1:155184000-155194000",
+      "expected_sha256": "60026035da804b4a7234ae051e4f8440c4a7f05f517affc47684ca85b5c25a6a"
+    },
+    {
+      "output": "All_Pairwise_and_Self_Merged_MUC1_motifs_filtered.fa",
+      "command": "vntyper install-references --from-source: ordered pairwise merge of MUC1_motifs_Rev_com.fa with itself, excluding the pairs named in filter_config.json; each record is '>{a}-{b}' carrying seq(b) followed by seq(a)",
+      "expected_sha256": "bd6a895ed9fee6aafdd2742f7d295f0b5b26d1a7bb613b9de7793eeba02df441"
+    }
+  ]
+}
