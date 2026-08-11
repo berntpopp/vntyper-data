@@ -72,8 +72,8 @@ artifact set and its remote checksums have been reviewed.
 
 `refs-v1` is specified in `releases/refs-v1.json` and built by
 `.github/workflows/release-data.yml`, which dispatches VNtyper's reusable builder pinned at
-`c047cbf` — the merge commit of
-[hassansaei/VNtyper#239](https://github.com/hassansaei/VNtyper/pull/239).
+`699b81e` — the merge commit of
+[hassansaei/VNtyper#239](https://github.com/hassansaei/VNtyper/pull/239) and #240.
 
 The release is cut as a **draft**. A maintainer reviews `verification-report.json` and checks
 `SHA256SUMS` against the remote assets before publishing. Published releases are immutable:

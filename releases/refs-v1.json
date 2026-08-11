@@ -1,6 +1,6 @@
 {
   "release_tag": "refs-v1",
-  "source_commit": "c047cbf29d46859eaf71ac1c47a4aa80ed4c516d",
+  "source_commit": "699b81efeaff587696b5a093389fa444d8038038",
 
   "bwa_version": "0.7.18-r1243-dirty",
   "samtools_version": "1.20",
