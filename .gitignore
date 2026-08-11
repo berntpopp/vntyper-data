@@ -1,0 +1,29 @@
+# Reference data is never committed here - it is published as release assets.
+# This repository holds metadata, the non-derivable seeds, and the release specs.
+refs/
+dist/
+*.tar.gz
+*.fa
+*.fna
+*.fa.gz
+*.fna.gz
+!seeds/*.fa
+
+# BWA and samtools indexes
+*.amb
+*.ann
+*.bwt
+*.pac
+*.sa
+*.mmi
+*.fai
+!seeds/*.fai
+
+SHA256SUMS
+release-manifest.json
+verification-report.json
+BUILD_INFO.json
+
+__pycache__/
+*.py[cod]
+.DS_Store
