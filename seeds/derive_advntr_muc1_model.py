@@ -153,7 +153,7 @@ def segment(array, max_mismatch=0, min_gap=20):
     return [array[a:b] for a, b in zip(kept, kept[1:] + [len(array)])]
 
 
-def build_row(chr1_path, assembly, mode, max_mismatch):
+def build_row(chr1_path, assembly, mode, max_mismatch, chr1_hg19=None):
     """Assemble the single database row for an assembly."""
     start, end = ARRAYS[assembly]
     array = read_chr1(chr1_path, start, end)
@@ -165,6 +165,39 @@ def build_row(chr1_path, assembly, mode, max_mismatch):
         # content; for hg38 the shipped content is hg19's and is NOT reproducible from
         # GRCh38 sequence -- which is the defect.
         segments = segment(array, max_mismatch=0)
+    elif mode == 'inherited':
+        # The shipped hg38 model carries hg19's segments verbatim -- that is the copy
+        # bug. Deriving them from the hg19 array rather than copying a blob keeps the
+        # artefact reproducible while leaving the HMM byte-identical to what has been
+        # benchmarked. Only the coordinates and ref_end come from this assembly.
+        #
+        # This is deliberately NOT a claim that these units describe GRCh38. They do
+        # not. It records the historical content in derivable form so a model can be
+        # regenerated, while the fetch window is corrected by ref_end.
+        if not chr1_hg19:
+            raise ValueError('--segmentation inherited needs --chr1-hg19: the units come '
+                             'from the GRCh37 array, and reading GRCh37 coordinates out '
+                             'of a GRCh38 FASTA would silently yield different sequence')
+        hg19_start, hg19_end = ARRAYS['hg19']
+        hg19_array = read_chr1(chr1_hg19, hg19_start, hg19_end)
+        segments = segment(hg19_array, max_mismatch=0)
+        return {
+            'id': VID,
+            'nonoverlapping': LEGACY[assembly]['nonoverlapping'],
+            'chromosome': CHROM,
+            'ref_start': start - 1,
+            'gene_name': GENE,
+            'annotation': ANNOTATION,
+            'pattern': PATTERN,
+            'left_flanking': left,
+            'right_flanking': right,
+            'repeats': ','.join(segments),
+            'scaled_score': SCALED_SCORE,
+            'ref_end': end,
+            'n_segments': len(segments),
+            'n_distinct': len(set(segments)),
+            'max_segment': max(len(s) for s in segments),
+        }
     else:
         segments = segment(array, max_mismatch=max_mismatch)
 
@@ -271,15 +304,20 @@ def main(argv=None):
     parser.add_argument('--assembly', required=True, choices=sorted(ARRAYS))
     parser.add_argument('--out', help='database to write')
     parser.add_argument('--schema', default='v2', choices=('legacy', 'v2'))
-    parser.add_argument('--segmentation', default='anchor', choices=('legacy', 'anchor'),
-                        help="'legacy' pins the exact-anchor rule; 'anchor' honours --max-mismatch")
+    parser.add_argument('--segmentation', default='anchor',
+                        choices=('legacy', 'anchor', 'inherited'),
+                        help="'legacy' pins the exact-anchor rule on this assembly's array; "
+                             "'anchor' honours --max-mismatch; 'inherited' reproduces the "
+                             "historical hg19-derived units (needs --chr1-hg19)")
+    parser.add_argument('--chr1-hg19', help='GRCh37 chr1 FASTA, required by --segmentation inherited')
     parser.add_argument('--max-mismatch', type=int, default=0,
                         help='anchor Hamming tolerance (0 = exact)')
     parser.add_argument('--verify', metavar='SHIPPED',
                         help='compare the derived database against a shipped one and report')
     args = parser.parse_args(argv)
 
-    row = build_row(args.chr1, args.assembly, args.segmentation, args.max_mismatch)
+    row = build_row(args.chr1, args.assembly, args.segmentation, args.max_mismatch,
+                    chr1_hg19=getattr(args, 'chr1_hg19', None))
     print('%s: array %d-%d (%d bp), %d segments, %d distinct, longest %d bp'
           % (args.assembly, ARRAYS[args.assembly][0], ARRAYS[args.assembly][1],
              ARRAYS[args.assembly][1] - ARRAYS[args.assembly][0] + 1,
