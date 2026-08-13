@@ -70,6 +70,29 @@ artifact set and its remote checksums have been reviewed.
 
 ## Status
 
+**`refs-v2`** is the current release, consumed by
+[VNtyper v2.0.21](https://github.com/hassansaei/VNtyper/releases/tag/v2.0.21) and later.
+It corrects the GRCh38 adVNTR model, which described 840 bp of a repeat array GRCh38
+carries at 3,525 bp — adVNTR derives its read-fetch window from the model's own content,
+so it saw 24% of the locus. Measured over 400 simulated samples, detection goes from
+132/200 carriers to 176/200. **Requires adVNTR >= 2.0.4.**
+
+Only the MUC1 common asset changed. The six per-assembly bundles are the `refs-v1`
+artifacts byte-for-byte, republished under the new tag keeping their original file names
+and digests, so their own `BUILD_INFO.json` and manifests stay truthful about when and
+from what they were built. `verification-report.json` records that check.
+
+The models are now derived rather than shipped as an opaque blob:
+`seeds/derive_advntr_muc1_model.py` builds them from chr1 plus pinned array bounds, and
+reproduces the previous hg19 database content byte-for-byte — 9 differing bytes, all
+SQLite header, zero content bytes. See
+[hassansaei/VNtyper#268](https://github.com/hassansaei/VNtyper/issues/268) and #1.
+
+`refs-v2` was cut published rather than as a draft, skipping the review step described
+above. That deviation and the verification available for post-hoc review are recorded in
+the release notes. `refs-v1` remains published and untouched, so installations pinned to
+it are unaffected.
+
 `refs-v1` is specified in `releases/refs-v1.json` and built by
 `.github/workflows/release-data.yml`, which dispatches VNtyper's reusable builder pinned at
 `699b81e` — the merge commit of
