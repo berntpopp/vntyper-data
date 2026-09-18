@@ -8,7 +8,7 @@ This directory contains the standard 13-feature Bayesian Ridge model (`grch38-st
 - **Model Version**: `standard13-bayesian-v1`
 - **Assembly**: `GRCh38` (contigs `chr1`, `1`)
 - **Target**: Complete diploid repeat count (`complete` count convention)
-- **Model Digest (SHA-256)**: `9a6f934ddd626cb6e2f215b47c9db8fd2150a8532d2712a92f7f8d663683b06d`
+- **Model Digest (SHA-256)**: `0d910946ab14d38cf5b3bd33a0b16e1b985c8377a9d2b466d98693a324ca3b51`
 
 ---
 
